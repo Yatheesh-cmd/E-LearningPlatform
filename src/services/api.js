@@ -12,7 +12,7 @@ const commonApi = async (url, method, headers = {}, data = {}, isMultipart = fal
   console.log('commonApi: Sending request:', { url, method, headers, data }); // Debugging
   try {
     const response = await axios(config);
-    console.log('commonApi: Response received:', response.data); // Debugging
+    console.log('commonApi: Response received:', response.data); 
     return response;
   } catch (error) {
     console.error('commonApi: Error:', error.response?.data || error.message);

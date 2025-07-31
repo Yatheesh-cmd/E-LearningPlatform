@@ -1,8 +1,18 @@
 import React, { useState, useEffect } from 'react';
+import { PDFDownloadLink, Document, Page, Text } from '@react-pdf/renderer';
+import { FiDownload } from 'react-icons/fi';
 import { updateProgressApi, getProgressApi } from '../services/api';
 import { toast } from 'react-toastify';
 
-const base_url = "http://localhost:5000";
+const base_url = "https://backelearn-2.onrender.com";
+
+const MyPDF = ({ resource }) => (
+  <Document>
+    <Page>
+      <Text>{resource}</Text>
+    </Page>
+  </Document>
+);
 
 function LessonViewer({ lesson, courseId, onProgressUpdate, videoCardHeight = "h-96" }) {
   const [watched, setWatched] = useState(false);
@@ -13,7 +23,6 @@ function LessonViewer({ lesson, courseId, onProgressUpdate, videoCardHeight = "h
     const fetchProgress = async () => {
       try {
         const progress = await getProgressApi(courseId, lesson._id);
-        
         if (progress?.watched) {
           setWatched(true);
           const watchedTime = progress.watchedTime ? new Date(progress.watchedTime) : null;
@@ -23,9 +32,8 @@ function LessonViewer({ lesson, courseId, onProgressUpdate, videoCardHeight = "h
             JSON.stringify({ watched: true, watchedTime })
           );
         } else {
-        
           const cachedProgress = JSON.parse(sessionStorage.getItem(`progress_${courseId}_${lesson._id}`));
-          if (cachedProgress && cachedProgress.watched) {
+          if (cachedProgress?.watched) {
             setWatched(true);
             setWatchedTime(cachedProgress.watchedTime ? new Date(cachedProgress.watchedTime) : null);
           }
@@ -34,7 +42,6 @@ function LessonViewer({ lesson, courseId, onProgressUpdate, videoCardHeight = "h
         console.error('Error fetching progress:', error);
         if (error.message.includes('No token found')) {
           toast.error('Session expired. Please log in again.');
-          // window.location.href = '/login';
         } else {
           toast.error('Failed to load lesson progress');
         }
@@ -96,6 +103,7 @@ function LessonViewer({ lesson, courseId, onProgressUpdate, videoCardHeight = "h
     <div className="bg-white rounded-lg shadow-md p-4">
       <h3 className="text-lg font-semibold">{lesson.title}</h3>
       <p className="text-gray-600">{lesson.content}</p>
+
       {embedUrl ? (
         <div className="mt-4">
           <iframe
@@ -112,21 +120,44 @@ function LessonViewer({ lesson, courseId, onProgressUpdate, videoCardHeight = "h
       ) : lesson.videoUrl ? (
         <p className="text-red-500 mt-4">Invalid YouTube URL</p>
       ) : null}
+
       {lesson.resources.length > 0 && (
         <div className="mt-4">
           <h4 className="text-md font-semibold">Resources</h4>
           {lesson.resources.map((resource, index) => (
-            <a
-              key={index}
-              href={`${base_url}/Uploads/${resource}`}
-              download
-              className="text-blue-500 hover:underline block"
-            >
-              {resource}
-            </a>
+            <div key={index} className="flex items-center gap-4 mt-2">
+              {/* Direct file download link */}
+              <a
+                href={`${base_url}/Uploads/${resource}`}
+                download
+                className="text-blue-600 hover:underline"
+              >
+                {resource}
+              </a>
+
+              {/* PDF download icon */}
+              <PDFDownloadLink
+                document={<MyPDF resource={resource} />}
+                fileName={`${resource}.pdf`}
+              >
+                {({ loading }) =>
+                  loading ? (
+                    <span className="text-gray-400 text-sm">Generating...</span>
+                  ) : (
+                    <button
+                      title="Download as PDF"
+                      className="p-2 rounded-full bg-blue-100 hover:bg-blue-200 text-blue-600"
+                    >
+                      <FiDownload size={18} />
+                    </button>
+                  )
+                }
+              </PDFDownloadLink>
+            </div>
           ))}
         </div>
       )}
+
       <div className="mt-4 flex items-center">
         <button
           onClick={handleWatched}
