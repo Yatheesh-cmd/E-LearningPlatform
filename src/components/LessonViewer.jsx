@@ -4,7 +4,7 @@ import { FiDownload } from 'react-icons/fi';
 import { updateProgressApi, getProgressApi } from '../services/api';
 import { toast } from 'react-toastify';
 
-const base_url = "https://backelearn-2.onrender.com";
+const base_url = "http://localhost:5000";
 
 const MyPDF = ({ resource }) => (
   <Document>
