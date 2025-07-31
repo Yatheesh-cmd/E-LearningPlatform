@@ -209,7 +209,7 @@ function Home() {
           <FiDatabase className="absolute top-1/3 left-1/4 w-28 h-28 text-teal-200 animate-pulse animation-delay-2000" />
           <FiStar className="absolute bottom-1/4 right-1/3 w-20 h-20 text-blue-200 animate-pulse animation-delay-3000" />
         </div>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-32 grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-9 pb-32 grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
           <div className="text-left space-y-8">
             <motion.h1
               initial={{ opacity: 0, y: 30 }}
@@ -392,7 +392,7 @@ function Home() {
         </div>
       </section>
 
-      {/* How it Works Section */}
+
       <section id="how-it-works" className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
